@@ -92,7 +92,7 @@ sub msg_pub {
         return;
     }
 
-    if(check_ignore($address) || check_away($server)) {
+    if(check_ignore($address) || check_away($server) || check_tmux_attached()) {
         return;
     }
 
@@ -113,7 +113,7 @@ sub msg_print_text {
         return;
     }
 
-    if(check_away($server)) {
+    if(check_away($server) || check_tmux_attached()) {
         return;
     }
 
@@ -125,7 +125,7 @@ sub msg_print_text {
 sub msg_pri {
     my ($server, $data, $nick, $address) = @_;
 
-    if(check_ignore($address) || check_away($server)) {
+    if(check_ignore($address) || check_away($server) || check_tmux_attached()) {
         return;
     }
     debug('Got priv msg.');
@@ -170,6 +170,27 @@ sub check_away {
     my $msg_only_if_away = Irssi::settings_get_bool('pushover_only_if_away');
     if ($msg_only_if_away && $server->{usermode_away} != '1') {
         debug("Only sending messages if we're marked as away, and we're not");
+        return 1;
+    }
+    return 0;
+}
+
+# check our tmux status to see if we're attached. returns 0 if it's ok to send a message. 
+sub check_tmux_attached {
+
+    my $msg_only_if_detached = Irssi::settings_get_bool('pushover_tmux_only_if_unattached');
+    my $tmux_session_name = Irssi::settings_get_str('pushover_tmux_session_name');
+
+    if ($tmux_session_name eq '') {
+        debug('tmux_session_name is blank, exiting');
+        return 1;
+    }
+
+    my $tmux_attached_command = "tmux list-sessions | grep \"^${tmux_session_name}.*(attached)\$\"";
+    my $tmux_attached_status = `$tmux_attached_command`;
+
+    if ($msg_only_if_detached && ($tmux_attached_status ne '')) {
+        debug("Only sending messages if we're detached as away, and we're attached");
         return 1;
     }
     return 0;
@@ -285,6 +306,9 @@ Irssi::settings_add_str($IRSSI{'name'}, 'pushover_apptoken', '');
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_debug', 0);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_ignore', 1);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_only_if_away', 0);
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_tmux_session_name', '');
+Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_tmux_only_if_unattached', 0);
+
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorefile', Irssi::get_irssi_dir().'/pushover_ignores');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorechannels', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_sound', 'siren');
