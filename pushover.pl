@@ -306,9 +306,8 @@ Irssi::settings_add_str($IRSSI{'name'}, 'pushover_apptoken', '');
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_debug', 0);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_ignore', 1);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_only_if_away', 0);
-Irssi::settings_add_str($IRSSI{'name'}, 'pushover_tmux_session_name', '');
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_tmux_only_if_unattached', 0);
-
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_tmux_session_name', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorefile', Irssi::get_irssi_dir().'/pushover_ignores');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorechannels', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_sound', 'siren');
