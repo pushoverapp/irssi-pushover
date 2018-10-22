@@ -315,7 +315,7 @@ Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_tmux_only_if_unattached', 0);
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_tmux_session_name', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorefile', Irssi::get_irssi_dir().'/pushover_ignores');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorechannels', '');
-Irssi::settings_add_str($IRSSI{'name'}, 'pushover_sound', 'siren');
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_sound', '');
 
 Irssi::command_bind('help pushignore', \&cmd_help);
 Irssi::command_bind('pushignore help', \&cmd_help);
