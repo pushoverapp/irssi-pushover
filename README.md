@@ -30,12 +30,15 @@ optionally only when `tmux` is detached.
 
 ## Optional Settings
 
+  - `/pushignore help` - get started in populating the ignore list
+
   - `/set pushover_debug 1` - enable verbosity
   - `/set pushover_ignore 1` - turn on ignore configurability
-  - `/set pushover_ignorefile` - set the path to the saved ignored list file
   - `/set pushover_ignorechannels` - a space separated list of channels to ignore
-  - `/pushignore help` - get started in populating the ignore list
+  - `/set pushover_ignorefile` - set the path to the saved ignored list file
   - `/set pushover_only_if_away [on|off]` - if `on`, only send Pushover messages when `/away`
   - `/set pushover_sound SOUND` - chosen from the [sound list](https://pushover.net/api#sounds), otherwise defaults to your device's default sound
   - `/set pushover_tmux_only_if_unattached [on|off]` - if `on`, only send Pushover messages when irssi is run inside of tmux and tmux is attached
   - `/set pushover_tmux_session_name SESSION_NAME` - the tmux session that irssi must be run under
+  - `/set pushover_url YOUR_URL` - a URL to include in each push message, possibly to open an app on your mobile device
+  - `/set pushover_url_title YOUR_URL_TITLE` - a URL title to include in each push message
