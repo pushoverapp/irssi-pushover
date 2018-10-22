@@ -57,10 +57,10 @@ sub debug {
 }
 
 sub send_push {
-    my $user_token = Irssi::settings_get_str('pushover_token');
-    my $app_token = Irssi::settings_get_str('pushover_apptoken');
-    if (!$user_token) {
-        debug('Missing pushover token.');
+    my $user_key = Irssi::settings_get_str('pushover_user_key');
+    my $api_token = Irssi::settings_get_str('pushover_api_token');
+    if (!$user_key) {
+        debug('Missing Pushover user key.');
         return;
     }
 
@@ -68,8 +68,8 @@ sub send_push {
     my ($channel, $text) = @_;
     my $resp = LWP::UserAgent->new()->post(
         'https://api.pushover.net/1/messages.json', [
-            token => $app_token,
-            user => $user_token,
+            token => $api_token,
+            user => $user_key,
             message => $text,
             sound => Irssi::settings_get_str('pushover_sound'),
             title => $channel,
@@ -304,8 +304,8 @@ sub read_file {
     return @out;
 }
 
-Irssi::settings_add_str($IRSSI{'name'}, 'pushover_token', '');
-Irssi::settings_add_str($IRSSI{'name'}, 'pushover_apptoken', '');
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_user_key', '');
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_api_token', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_url', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_url_title', '');
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_debug', 0);
@@ -331,9 +331,29 @@ Irssi::signal_add_last('message private', 'msg_pri');
 Irssi::signal_add_last('message kick', 'msg_kick');
 
 Irssi::print('%Y>>%n '.$IRSSI{name}.' '.$VERSION.' loaded.');
-if (!Irssi::settings_get_str('pushover_token')) {
-    Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover User Key token is not set, set it with /set pushover_token token.');
+
+if (!Irssi::settings_get_str('pushover_user_key')) {
+    # try migrating from old setting
+	Irssi::settings_add_str($IRSSI{'name'}, 'pushover_token', '');
+    if (Irssi::settings_get_str('pushover_token')) {
+        Irssi::settings_set_str('pushover_user_key', Irssi::settings_get_str('pushover_token'));
+        Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover User Key migrated from old setting, you should probably /save');
+        Irssi::signal_emit('setup changed');
+    }
 }
-if (!Irssi::settings_get_str('pushover_apptoken')) {
-    Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover application token is not set, set it with /set pushover_apptoken token.');
+if (!Irssi::settings_get_str('pushover_user_key')) {
+    Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover User Key is not set, set it with /set pushover_user_key key');
+}
+
+if (!Irssi::settings_get_str('pushover_api_token')) {
+    # try migrating from old setting
+	Irssi::settings_add_str($IRSSI{'name'}, 'pushover_apptoken', '');
+    if (Irssi::settings_get_str('pushover_apptoken')) {
+        Irssi::settings_set_str('pushover_api_token', Irssi::settings_get_str('pushover_apptoken'));
+        Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover API Token migrated from old setting, you should probably /save');
+        Irssi::signal_emit('setup changed');
+    }
+}
+if (!Irssi::settings_get_str('pushover_api_token')) {
+    Irssi::print('%Y>>%n '.$IRSSI{name}.' Pushover API token is not set, set it with /set pushover_api_token token');
 }
