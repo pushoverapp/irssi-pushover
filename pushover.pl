@@ -9,7 +9,7 @@ use vars qw($VERSION %IRSSI %config);
 use LWP::UserAgent;
 use Scalar::Util qw(looks_like_number);
 
-$VERSION = '0.2.1';
+$VERSION = '0.3';
 
 %IRSSI = (
     authors => 'Marcus Carlsson',
