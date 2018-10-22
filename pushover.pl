@@ -72,7 +72,9 @@ sub send_push {
             user => $user_token,
             message => $text,
             sound => Irssi::settings_get_str('pushover_sound'),
-            title => $channel
+            title => $channel,
+            url => Irssi::settings_get_str('pushover_url'),
+            url_title => Irssi::settings_get_str('pushover_url_title'),
         ]
     );
 
@@ -302,6 +304,8 @@ sub read_file {
 
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_token', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_apptoken', '');
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_url', '');
+Irssi::settings_add_str($IRSSI{'name'}, 'pushover_url_title', '');
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_debug', 0);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_ignore', 1);
 Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_only_if_away', 0);
