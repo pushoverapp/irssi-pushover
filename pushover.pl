@@ -34,7 +34,7 @@ a tilde in front of the ident.
 
 Examples:
   Will match foo@test.bar.se but *not* ~foo@test.bar.se.
-    /PUSHIGNORE ADD foo@*.bar.se  
+    /PUSHIGNORE ADD foo@*.bar.se
   Use the list-command to show a list of ignores and the number in front
   combined with remove to delete that mask.
     /PUSHIGNORE REMOVE 2
@@ -164,7 +164,7 @@ sub strip_formating {
 }
 
 
-# check our away status & pushover_only_if_away. returns 0 if it's ok to send a message. 
+# check our away status & pushover_only_if_away. returns 0 if it's ok to send a message.
 sub check_away {
     my ($server) = @_;
     my $msg_only_if_away = Irssi::settings_get_bool('pushover_only_if_away');
@@ -175,9 +175,8 @@ sub check_away {
     return 0;
 }
 
-# check our tmux status to see if we're attached. returns 0 if it's ok to send a message. 
+# check our tmux status to see if we're attached. returns 0 if it's ok to send a message.
 sub check_tmux_attached {
-
     my $msg_only_if_detached = Irssi::settings_get_bool('pushover_tmux_only_if_unattached');
     my $tmux_session_name = Irssi::settings_get_str('pushover_tmux_session_name');
 
@@ -264,11 +263,11 @@ sub ignore_remove {
     $num =~ s/^(\d+).*$/$1/;
     return Irssi::print("List-number is needed when removing", MSGLEVEL_CLIENTCRAP) unless(looks_like_number($num));
     my @ignores = read_file();
-    
+
     # Index out of range
     return Irssi::print("Number was out of range.", MSGLEVEL_CLIENTCRAP) unless(scalar(@ignores) >= $num);
     delete $ignores[$num-1];
-    write_file(@ignores); 
+    write_file(@ignores);
 }
 
 sub write_file {
@@ -321,8 +320,6 @@ Irssi::command_bind('pushignore', \&ignore_handler);
 Irssi::command_bind('pushtest', \&msg_test);
 Irssi::signal_add_first("default command pushignore", \&ignore_unknown);
 
-
-#Irssi::signal_add_last('message public', 'msg_pub');
 Irssi::signal_add_last('print text', 'msg_print_text');
 Irssi::signal_add_last('message private', 'msg_pri');
 Irssi::signal_add_last('message kick', 'msg_kick');
