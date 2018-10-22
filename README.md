@@ -1,37 +1,41 @@
 irssi-pushover
 ==============
+Originally by [Marcus Carlsson](https://github.com/xintron/irssi-pushover)
 
-Plugin for irssi (a console based IRC client) to send push-notifications using pushover.net.
+Plugin for [irssi](https://irssi.org/) IRC client to send push notifications
+using [Pushover](https://pushover.net/).
 
-This allows you to be notified when someone messages/mentions you on IRC, 
-when you're not online.
+This allows you to be notified when someone messages/mentions you on IRC,
+optionally only when `tmux` is detached.
 
+## Installation
 
-# Installation
+- [Create an API token](https://pushover.net/apps/clone/irssi)
+- Fetch this Git repository:
+  - `git clone https://github.com/pushoverapp/irssi-pushover`
+- Copy `pushover.pl` to `~/.irssi/scripts`, optionally symlink it into `scripts/autorun`.
+  - `cd irssi-pushover`
+  - `cp pushover.pl ~/.irssi/scripts/`
+  - `cd ~/.irssi/scripts/autorun; ln -s ../pushover.pl .`
+- Within irssi:
+  - `/load autorun/pushover.pl`
+  - `/set pushover_user_key YOUR_PUSHOVER_USER_KEY` (which can be found on [your dashboard](https://pushover.net/dashboard))
+  - `/set pushover_api_token YOUR_PUSHOVER_API_TOKEN` created in step 1
+  - `/save`
+  - `/pushtest hello world` to test sending
 
-  0. Add a new application to your pushover control panel, note the API key.
-  1. cp pushover.pl to ~/.irssi/scripts/ and symlink into scripts/autorun if you desire.
-  2. touch ~/.irssi/pushover_ignores
-  2. Within irssi: 
-    1. /load autorun/pushover.pl
-    2. /set pushover_token <<your pushover User Key>>
-    3. /set pushover_apptoken <<your pushover app token>>
-    4. /set pushover_sound (choose one from https://pushover.net/api#sounds, defaults to siren)
-    5. /save
-    6. /pushtest hello world. (sends test message to your device(s)).
+## Dependencies
 
+ - `Crypt::SSLeay` / `libcrypt-ssleay-perl` installed
 
-# Dependencies
+## Optional Settings
 
-  0. Account with pushover.net
-  1. Crypt::SSLeay / libcrypt-ssleay-perl is installed 
-
-# Other things 
-
-  0. /set pushover_debug 1 - should make it verbose.
-  1. /set pushover_ignore 1 - turn on ignore configurability
-  2. /set pushover_ignorefile - ignore messages from ....
-  3. /set pushover_ignorechannels - space separated list of channels to ignore.
-  4. /pushignore help - should get you started in populating the ignore list.
-  5. /set pushover_only_if_away [on|off] - if set to on, then you'll 
-        need to be set to away before we send notifications.
+  - `/set pushover_debug 1` - enable verbosity
+  - `/set pushover_ignore 1` - turn on ignore configurability
+  - `/set pushover_ignorefile` - set the path to the saved ignored list file
+  - `/set pushover_ignorechannels` - a space separated list of channels to ignore
+  - `/pushignore help` - get started in populating the ignore list
+  - `/set pushover_only_if_away [on|off]` - if `on`, only send Pushover messages when `/away`
+  - `/set pushover_sound SOUND` - chosen from the [sound list](https://pushover.net/api#sounds), otherwise defaults to your device's default sound
+  - `/set pushover_tmux_only_if_unattached [on|off]` - if `on`, only send Pushover messages when irssi is run inside of tmux and tmux is attached
+  - `/set pushover_tmux_session_name SESSION_NAME` - the tmux session that irssi must be run under
