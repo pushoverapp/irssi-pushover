@@ -285,6 +285,8 @@ sub write_file {
 
 sub read_file {
     read_settings();
+    return if !(-f $pushover_ignorefile);
+
     my $fp;
     if (!open($fp, "<", $pushover_ignorefile)) {
         Irssi::print("Error opening ignore file", MSGLEVEL_CLIENTCRAP);
