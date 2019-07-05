@@ -57,6 +57,7 @@ sub debug {
 }
 
 sub send_push {
+    my $omit_content = Irssi::settings_get_bool('pushover_omit_content');
     my $user_key = Irssi::settings_get_str('pushover_user_key');
     my $api_token = Irssi::settings_get_str('pushover_api_token');
     if (!$user_key) {
@@ -65,14 +66,15 @@ sub send_push {
     }
 
     debug('Sending notification.');
-    my ($channel, $text) = @_;
+    my ($server, $channel, $text) = @_;
+    my $chatnetname = $server->{chatnet};
     my $resp = LWP::UserAgent->new()->post(
         'https://api.pushover.net/1/messages.json', [
             token => $api_token,
             user => $user_key,
-            message => $text,
+            message => $omit_content ? 'pushover_omit_content is set' : $text,
             sound => Irssi::settings_get_str('pushover_sound'),
-            title => $channel,
+            title => "$channel\@$chatnetname",
             url => Irssi::settings_get_str('pushover_url'),
             url_title => Irssi::settings_get_str('pushover_url_title'),
         ]
@@ -100,7 +102,7 @@ sub msg_pub {
 
     if ($data =~ /$safeNick/i) {
         debug('Got pub msg.');
-        send_push($target, $nick.': '.strip_formating($data));
+        send_push($server, $target, $nick.': '.strip_formating($data));
     }
 }
 
@@ -121,7 +123,7 @@ sub msg_print_text {
 
     debug('Got nick highlight');
     $stripped =~ s/^\s+|\s+$//g;
-    send_push($target, $stripped);
+    send_push($server, $target, $stripped);
 }
 
 sub msg_pri {
@@ -131,7 +133,7 @@ sub msg_pri {
         return;
     }
     debug('Got priv msg.');
-    send_push('Priv, '.$nick, strip_formating($data));
+    send_push($server, 'Priv, '.$nick, strip_formating($data));
 }
 
 sub msg_kick {
@@ -143,7 +145,7 @@ sub msg_kick {
 
     if ($nick eq $server->{nick}) {
         debug('Was kicked.');
-        send_push('Kicked: '.$channel, 'Was kicked by: '.$kicker.'. Reason: '.strip_formating($reason));
+        send_push($server, 'Kicked: '.$channel, 'Was kicked by: '.$kicker.'. Reason: '.strip_formating($reason));
     }
 }
 
@@ -153,7 +155,7 @@ sub msg_test {
    my $orig_debug = Irssi::settings_get_bool('pushover_debug');
    Irssi::settings_set_bool('pushover_debug', 1);
    debug("Sending test message :" . $data);
-   send_push("Test Message", strip_formating($data));
+   send_push($server, "Test Message", strip_formating($data));
    Irssi::settings_set_bool('pushover_debug', $orig_debug);
 }
 
@@ -316,6 +318,7 @@ Irssi::settings_add_str($IRSSI{'name'}, 'pushover_tmux_session_name', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorefile', Irssi::get_irssi_dir().'/pushover_ignores');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_ignorechannels', '');
 Irssi::settings_add_str($IRSSI{'name'}, 'pushover_sound', '');
+Irssi::settings_add_bool($IRSSI{'name'}, 'pushover_omit_content', 0);
 
 Irssi::command_bind('help pushignore', \&cmd_help);
 Irssi::command_bind('pushignore help', \&cmd_help);
