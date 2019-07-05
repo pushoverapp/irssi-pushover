@@ -182,7 +182,7 @@ sub check_tmux_attached {
     my $msg_only_if_detached = Irssi::settings_get_bool('pushover_tmux_only_if_unattached');
     my $tmux_session_name = Irssi::settings_get_str('pushover_tmux_session_name');
 
-    if ($tmux_session_name eq '') {
+    if ($msg_only_if_detached && $tmux_session_name eq '') {
         debug('tmux_session_name is blank, exiting');
         return 1;
     }
